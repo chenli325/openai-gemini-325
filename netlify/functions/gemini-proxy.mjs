@@ -1,10 +1,6 @@
 // gemini-proxy.mjs
 
-// 使用 ES Modules 导入语法
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
-// 使用 ES Modules 导出语法
+// 直接使用 ES modules 导出语法，不需要 createRequire
 export const handler = async (event) => {
   // 构建目标 URL
   const path = event.path.replace('/.netlify/functions/gemini-proxy', '')
