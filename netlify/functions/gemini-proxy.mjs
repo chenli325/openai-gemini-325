@@ -1,4 +1,11 @@
-const handler = async (event) => {
+// gemini-proxy.mjs
+
+// 使用 ES Modules 导入语法
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+// 使用 ES Modules 导出语法
+export const handler = async (event) => {
   // 构建目标 URL
   const path = event.path.replace('/.netlify/functions/gemini-proxy', '')
   const targetUrl = `https://generativelanguage.googleapis.com${path}${event.rawQuery ? `?${event.rawQuery}` : ''}`
@@ -45,5 +52,3 @@ const handler = async (event) => {
     }
   }
 }
-
-exports.handler = handler
