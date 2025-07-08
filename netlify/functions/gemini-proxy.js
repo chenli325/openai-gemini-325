@@ -1,28 +1,31 @@
-import { Handler } from '@netlify/functions'
-
-const handler: Handler = async (event) => {
+const handler = async (event) => {
+  // 构建目标 URL
   const path = event.path.replace('/.netlify/functions/gemini-proxy', '')
   const targetUrl = `https://generativelanguage.googleapis.com${path}${event.rawQuery ? `?${event.rawQuery}` : ''}`
 
   try {
-    const headers: Record<string, string> = {}
+    // 创建请求头
+    const headers = {}
     for (const [key, value] of Object.entries(event.headers)) {
       if (value && !['host', 'connection', 'content-length'].includes(key.toLowerCase())) {
         headers[key] = value
       }
     }
 
+    // 发送代理请求
     const response = await fetch(targetUrl, {
       method: event.httpMethod,
       headers: headers,
       body: event.body,
     })
 
-    const responseHeaders: Record<string, string> = {}
+    // 获取响应头
+    const responseHeaders = {}
     response.headers.forEach((value, key) => {
       responseHeaders[key] = value
     })
 
+    // 返回响应
     return {
       statusCode: response.status,
       headers: {
@@ -43,4 +46,4 @@ const handler: Handler = async (event) => {
   }
 }
 
-export { handler }
+exports.handler = handler
