@@ -35,6 +35,9 @@ export const handler = async (event, context) => {
       body: event.body, // 直接转发请求体
     });
 
+    console.log('Response status:', response.status);
+    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
     // 获取响应的原始文本
     const responseText = await response.text();
     console.info('resp:', responseText);
