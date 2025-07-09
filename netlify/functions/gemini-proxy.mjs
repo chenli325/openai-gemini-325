@@ -1,6 +1,18 @@
 // netlify/functions/proxy.mjs
 
 export const handler = async (event, context) => {
+  // 支持 OPTIONS 请求，用于 CORS 预检
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      },
+    };
+  }
+
   // 只允许 POST 请求
   if (event.httpMethod !== 'POST') {
     return {
@@ -23,24 +35,29 @@ export const handler = async (event, context) => {
       body: event.body, // 直接转发请求体
     });
 
-    // 获取响应数据
-    const data = await response.json();
+    // 获取响应的原始文本
+    const responseText = await response.text();
 
     // 直接返回原始响应
     return {
       statusCode: response.status,
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*', // 允许跨域请求
+        'Content-Type': response.headers.get('Content-Type') || 'application/json',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': '*',
       },
-      body: JSON.stringify(data),
+      body: responseText, // 直接返回原始响应文本
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal Server Error', details: error.message }),
+      body: JSON.stringify({ 
+        error: 'Internal Server Error', 
+        details: error.message,
+        path: event.path,
+        body: event.body 
+      }),
     };
   }
 };
