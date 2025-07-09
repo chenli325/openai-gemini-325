@@ -3,3 +3,12 @@
 
 [functions]
         node_bundler = "esbuild"
+
+[[headers]]
+  for = "/chat/completions"
+  [headers.values]
+    Content-Encoding = "identity"
+    Cache-Control = "no-transform"
+    X-Content-Type-Options = "nosniff"
+
+[build.processing]
