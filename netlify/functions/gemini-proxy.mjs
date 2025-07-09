@@ -12,7 +12,7 @@ export const handler = async (event, context) => {
       },
     };
   }
-
+ console.info('req:', event.path);
   // 只允许 POST 请求
   if (event.httpMethod !== 'POST') {
     return {
@@ -37,7 +37,7 @@ export const handler = async (event, context) => {
 
     // 获取响应的原始文本
     const responseText = await response.text();
-
+    console.info('resp:', responseText);
     // 直接返回原始响应
     return {
       statusCode: response.status,
